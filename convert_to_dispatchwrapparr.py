@@ -125,7 +125,6 @@ def convert(content: str) -> str:
     print(f"Converted: {converted} | Plain: {plain} | Total lines: {len(output)}", file=sys.stderr)
     result = "\n".join(output) + "\n"
     # Brand as axis
-    import re
     result = re.sub(r'billed-msg="[^"]*"', 'billed-msg="axis"', result, count=1)
     result = result.replace("M3U PLAYLIST BY: RYANSNETCAFE", "axis")
     return result
