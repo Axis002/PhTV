@@ -3,7 +3,9 @@ name: Update Dispatchwrapparr Playlist
 on:
   schedule:
     - cron: "0 19 * * *"
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual initial start
+  repository_dispatch:
+    types: [loop_trigger] # Triggers the continuous next run
 
 permissions:
   contents: write
@@ -11,6 +13,12 @@ permissions:
 jobs:
   convert:
     runs-on: ubuntu-latest
+    
+    # Prevent multiple loops from running simultaneously if a cron and loop overlap
+    concurrency:
+      group: playlist-loop
+      cancel-in-progress: true
+
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -34,3 +42,14 @@ jobs:
             git commit -m "chore: update playlist $(date -u +%Y-%m-%d)"
             git push
           fi
+
+      # Adds a mandatory delay to prevent hitting GitHub API rate limits
+      - name: Cool Down Period
+        run: sleep 30
+
+      # Triggers this exact workflow to run again immediately
+      - name: Trigger Next Loop
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.phrefresh }}
+          event-type: loop_trigger
