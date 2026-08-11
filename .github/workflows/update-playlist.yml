@@ -2,10 +2,8 @@ name: Update Dispatchwrapparr Playlist
 
 on:
   schedule:
-    - cron: "0 19 * * *"
-  workflow_dispatch: 
-  repository_dispatch:
-    types: [loop_trigger] # This allows the file to trigger itself
+    - cron: "0 19 * * *" # Runs every day at 19:00 UTC
+  workflow_dispatch: # Keeps the manual "Run workflow" button active
 
 permissions:
   contents: write
@@ -13,11 +11,6 @@ permissions:
 jobs:
   convert:
     runs-on: ubuntu-latest
-    
-    concurrency:
-      group: playlist-loop
-      cancel-in-progress: true
-
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -41,12 +34,3 @@ jobs:
             git commit -m "chore: update playlist $(date -u +%Y-%m-%d)"
             git push
           fi
-
-      - name: Cool Down Period
-        run: sleep 30
-
-      - name: Trigger Next Loop
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.REFRESHER }} # Your updated secret
-          event-type: loop_trigger
