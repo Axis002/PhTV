@@ -48,5 +48,5 @@ jobs:
       - name: Trigger Next Loop
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.phrefresh }} # Your updated secret
+          token: ${{ secrets.REFRESHER }} # Your updated secret
           event-type: loop_trigger
