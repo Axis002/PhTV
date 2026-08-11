@@ -2,7 +2,7 @@ name: Update Dispatchwrapparr Playlist
 
 on:
   schedule:
-    - cron: "13 12 * * *" # Runs every day at 19:00 UTC
+    - cron: "17 12 * * *" # Runs every day at 19:00 UTC
   workflow_dispatch: # Keeps the manual "Run workflow" button active
 
 permissions:
