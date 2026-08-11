@@ -1,7 +1,7 @@
 name: Continuous Loop Workflow
 
 on:
-  workflow_dispatch: # <--- THIS LINE CREATES THE RUN BUTTON
+  workflow_dispatch: 
   repository_dispatch:
     types: [loop_trigger]
 
@@ -12,15 +12,20 @@ jobs:
       group: continuous-loop
       cancel-in-progress: true
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Run Main Task
         run: |
           echo "Your continuous task runs here!"
           sleep 10
 
+      - name: Cool Down Period
+        run: sleep 30
+
+      # Clean, reliable community action replacing the broken curl command
       - name: Trigger Next Loop
-        run: |
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.MY_LOOP_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://github.com{{ github.repository }}/dispatches \
-            -d '{"event_type": "loop_trigger"}'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.MY_LOOP_TOKEN }}
+          event-type: loop_trigger
