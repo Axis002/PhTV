@@ -3,9 +3,9 @@ name: Update Dispatchwrapparr Playlist
 on:
   schedule:
     - cron: "0 19 * * *"
-  workflow_dispatch: # Allows manual initial start
+  workflow_dispatch: 
   repository_dispatch:
-    types: [loop_trigger] # Triggers the continuous next run
+    types: [loop_trigger] # This allows the file to trigger itself
 
 permissions:
   contents: write
@@ -14,7 +14,6 @@ jobs:
   convert:
     runs-on: ubuntu-latest
     
-    # Prevent multiple loops from running simultaneously if a cron and loop overlap
     concurrency:
       group: playlist-loop
       cancel-in-progress: true
@@ -34,7 +33,7 @@ jobs:
       - name: Commit & push if changed
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@://github.com"
           git add axis.m3u
           if git diff --staged --quiet; then
             echo "No changes"
@@ -43,13 +42,11 @@ jobs:
             git push
           fi
 
-      # Adds a mandatory delay to prevent hitting GitHub API rate limits
       - name: Cool Down Period
         run: sleep 30
 
-      # Triggers this exact workflow to run again immediately
       - name: Trigger Next Loop
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.phrefresh }}
+          token: ${{ secrets.phrefresh }} # Your updated secret
           event-type: loop_trigger
