@@ -2,7 +2,7 @@ name: Update Dispatchwrapparr Playlist
 
 on:
   schedule:
-    - cron: "20 12 * * *"
+    - cron: "20 18 * * *"
   workflow_dispatch:
 
 permissions:
