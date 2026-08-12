@@ -1,8 +1,4 @@
-#!/usr/bin/env python3
-"""
-Convert ryansnetcafe-style M3U (with KODIPROP ClearKey) 
-to Dispatchwrapparr-friendly format (#clearkey= + optional #header=)
-"""
+
 
 import re
 import sys
